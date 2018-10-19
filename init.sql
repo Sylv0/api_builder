@@ -1,0 +1,2 @@
+/* Create the contacts table */
+CREATE TABLE IF NOT EXISTS 'main'.'routes' ( "id" INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL UNIQUE, "route" VARCHAR NOT NULL UNIQUE, "method" VARCHAR NOT NULL, "action" VARCHAR NOT NULL);

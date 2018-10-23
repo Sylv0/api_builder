@@ -22,7 +22,7 @@ setupAPIDatabase = () => {
     }
   )
 
-  db.run(fs.readFileSync("init.sql", "utf-8"))
+  db.exec(fs.readFileSync("init.sql", "utf-8"))
 
   db.close(err => {
     if (err) console.log("Failed to close database")

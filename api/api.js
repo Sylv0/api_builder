@@ -58,6 +58,35 @@ function registerRoute(database, route, action, callback, method = "GET") {
   )
 }
 
+function getValuesFromTargetDatabase(action, callback) {
+  toReturn = []
+  from = []
+  Object.keys(action).forEach(function(key) {
+    switch (key) {
+      case "toReturn":
+        toReturn = action["toReturn"]
+
+      case "from":
+        from = action["from"]
+        break
+
+      default:
+        console.log("Nothing")
+        break
+    }
+  })
+  knex.select(...toReturn).from(...from)
+  .then(rows => {
+    callback(rows)
+  }, err => {
+    console.log(err)
+  })
+  .finally(() => {
+    knex.destroy()
+  })
+}
+
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes
 module.exports.register = registerRoute
+module.exports.return = getValuesFromTargetDatabase

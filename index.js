@@ -10,7 +10,9 @@ api.setup()
 api.routes(data => {
   data.forEach(route => {
     app.get(`/api/${route.route}`, (req, res) => {
-      res.send(route.route)
+      api.return(JSON.parse(route.action), data => {
+        res.send(data)
+      })
     })
   })
 })

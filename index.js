@@ -20,7 +20,7 @@ app.get("/", (req, res) => {
 })
 
 app.get("/build/register", (req, res) => {
-  api.register(req.query.route, req.query.action, registered => {
+  api.register(req.query.database, req.query.route, req.query.action, registered => {
     res.send((registered ? "Saved route" : "Failed to save route"))
   })
 })

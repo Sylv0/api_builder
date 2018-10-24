@@ -45,10 +45,10 @@ function getRoutes(callback) {
   )
 }
 
-function registerRoute(route, action, callback, method = "GET") {
+function registerRoute(database, route, action, callback, method = "GET") {
   let db = new sql.Database("api.db", sql.OPEN_READWRITE)
   db.run(
-    `INSERT INTO routes (route, method, action) VALUES ('${route}', '${method}', '${action}')`,
+    `INSERT INTO routes (database, route, method, action) VALUES ('${database}', '${route}', '${method}', '${action}')`,
     () => {
       return
     },

@@ -30,32 +30,15 @@ setupAPIDatabase = () => {
 }
 
 function getRoutes(callback) {
-  let db = new sql.Database("api.db", sql.OPEN_READONLY)
-  let data = []
-  db.each(
-    "SELECT route, action FROM routes WHERE method='GET'",
-    (err, row) => {
-      if (!err) data.push(row)
-      else data = "Not wah"
-    },
-    () => {
-      db.close()
-      callback(data)
-    }
-  )
+  knex.select("route", "action").from("routes").where({method: "GET"})
+  .then(rows => callback(rows))
+  .catch(err => console.log(err))
 }
 
 function registerRoute(database, route, action, callback, method = "GET") {
-  let db = new sql.Database("api.db", sql.OPEN_READWRITE)
-  db.run(
-    `INSERT INTO routes (database, route, method, action) VALUES ('${database}', '${route}', '${method}', '${action}')`,
-    () => {
-      return
-    },
-    err => {
-      callback(err ? false : true)
-    }
-  )
+  knex("routes").insert({database: database, route: route, action: action, method: method})
+  .then(res => console.log(res))
+  .catch(err => console.log(err))
 }
 
 function getValuesFromTargetDatabase(action, callback) {
@@ -80,9 +63,6 @@ function getValuesFromTargetDatabase(action, callback) {
     callback(rows)
   }, err => {
     console.log(err)
-  })
-  .finally(() => {
-    knex.destroy()
   })
 }
 

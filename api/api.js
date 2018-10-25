@@ -31,15 +31,30 @@ setupAPIDatabase = () => {
 }
 
 function getRoutes(callback) {
-  knex.select("route", "action").from("routes").where({method: "GET"})
-  .then(rows => callback(rows))
-  .catch(err => console.log(err))
+  knex
+    .select("route", "action")
+    .from("routes")
+    .where({ method: "GET" })
+    .then(rows => callback(rows))
+    .catch(err => console.log(err))
 }
 
-function registerRoute(database, route, action, callback, method = "GET") {
-  knex("routes").insert({database: database, route: route, action: action, method: method})
-  .then(res => console.log(res))
-  .catch(err => console.log(err))
+function registerRoute(
+  database = 1,
+  route = "wah",
+  action = '{"toReturn": ["route", "method"], "from": ["routes"]}',
+  callback,
+  method = "GET"
+) {
+  knex("routes")
+    .insert({
+      database: database,
+      route: route,
+      action: action,
+      method: method
+    })
+    .then(res => callback(true))
+    .catch(err => callback(false, err))
 }
 
 function getValuesFromTargetDatabase(action, callback) {
@@ -59,12 +74,17 @@ function getValuesFromTargetDatabase(action, callback) {
         break
     }
   })
-  knex.select(...toReturn).from(...from)
-  .then(rows => {
-    callback(rows)
-  }, err => {
-    console.log(err)
-  })
+  knex
+    .select(...toReturn)
+    .from(...from)
+    .then(
+      rows => {
+        callback(rows)
+      },
+      err => {
+        console.log(err)
+      }
+    )
 }
 
 module.exports.setup = setupAPIDatabase

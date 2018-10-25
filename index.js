@@ -33,10 +33,8 @@ app.get("/", (req, res) => {
 })
 
 app.get("/build/register", (req, res) => {
-  console.log(api)
-  api.register(req.query.database, req.query.route, req.query.action, registered => {
-    res.send((registered ? "Saved route" : "Failed to save route"))
-    console.log(api)
+  api.register(req.query.database, req.query.route, req.query.action, (registered, err) => {
+    res.send((registered ? "Saved route" : `Failed to save route, responded with message:\n${err}`))
     openEndpoints(api)
   })
 })

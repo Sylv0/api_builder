@@ -1,10 +1,16 @@
 const express = require("express")
 
 const app = express()
+let router = undefined
+
+app.use((req, res, next) => {
+  router(req, res, next)
+})
 
 const api = require("./api/api")
 
 function openEndpoints(api) {
+  router = express.Router()
   api.routes(data => {
     data.forEach(route => {
       app.get(`/api/${route.route}`, (req, res) => {

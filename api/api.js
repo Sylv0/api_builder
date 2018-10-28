@@ -1,15 +1,21 @@
+'use strict'
+
 const fs = require("fs")
 
 const sql = require("sqlite3").verbose()
-const knex = require("knex")({
-  client: "sqlite3",
-  connection: {
-    filename: "api.db"
-  },
-  useNullAsDefault: true
-})
+// const knex = require("knex")({
+//   client: "sqlite3",
+//   connection: {
+//     filename: "api.db"
+//   },
+//   useNullAsDefault: true
+// })
 
-setupAPIDatabase = () => {
+const Database = require('./sqlite')
+const database = new Database('api.db')
+const knex = database.knex
+
+const setupAPIDatabase = () => {
   let db = new sql.Database(
     "api.db",
     sql.OPEN_READWRITE | sql.OPEN_CREATE,
@@ -58,8 +64,8 @@ function registerRoute(
 }
 
 function getValuesFromTargetDatabase(action, callback) {
-  toReturn = []
-  from = []
+  let toReturn = []
+  let from = []
   Object.keys(action).forEach(function(key) {
     switch (key) {
       case "toReturn":

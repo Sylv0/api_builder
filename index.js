@@ -11,10 +11,12 @@ const api = require("./api/api")
 
 function openEndpoints(api) {
   router = express.Router()
-  api.routes(data => {
+  api.routes()
+  .then(data => {
     data.forEach(route => {
       app.get(`/api/${route.route}`, (req, res) => {
-        api.return(JSON.parse(route.action), data => {
+        api.return(JSON.parse(route.action))
+        .then(data => {
           res.send(data)
         })
       })
@@ -33,8 +35,10 @@ app.get("/", (req, res) => {
 })
 
 app.get("/build/register", (req, res) => {
-  api.register(req.query.database, req.query.route, req.query.action, (registered, err) => {
-    res.send((registered ? "Saved route" : `Failed to save route, responded with message:\n${err}`))
+  api.register(req.query.database, req.query.route, req.query.action)
+  .then(res => {
+    res.send("Saved route")
     openEndpoints(api)
   })
+  .catch(err => res.send(`Failed to save route, responded with message:\n${err}`))
 })

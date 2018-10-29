@@ -33,62 +33,68 @@ function getDatabases() {
   });
 }
 
-function getRoutes(callback) {
-  knex
+function getRoutes() {
+  return new Promise((resolve, reject) => {
+    knex
     .select("route", "action")
     .from("routes")
     .where({ method: "GET" })
-    .then(rows => callback(rows))
-    .catch(err => console.log(err))
+    .then(rows => resolve(rows))
+    .catch(err => reject(err))
+  })
 }
 
 function registerRoute(
   database = 1,
   route = "wah",
   action = '{"toReturn": ["route", "method"], "from": ["routes"]}',
-  callback,
   method = "GET"
 ) {
-  knex("routes")
+  return new Pormise((resolve, reject) => {
+    knex("routes")
     .insert({
       database: database,
       route: route,
       action: action,
       method: method
     })
-    .then(res => callback(true))
-    .catch(err => callback(false, err))
+    .then(res => resolve(res))
+    .catch(err => reject(err))
+  })
 }
 
-function getValuesFromTargetDatabase(action, callback) {
-  let toReturn = []
-  let from = []
-  Object.keys(action).forEach(function(key) {
-    switch (key) {
-      case "toReturn":
+function getValuesFromTargetDatabase(action) {
+  return new Promise((resolve, reject) => {
+    let toReturn = []
+    let from = []
+    Object.keys(action).forEach(function(key) {
+      switch (key) {
+        case "toReturn":
         toReturn = action["toReturn"]
-
-      case "from":
+        
+        case "from":
         from = action["from"]
         break
-
-      default:
+        
+        default:
         console.log("Nothing")
         break
-    }
-  })
-  knex
+      }
+    })
+    knex
     .select(...toReturn)
     .from(...from)
     .then(
       rows => {
-        callback(rows)
+        console.log("Test")
+        resolve(rows)
       },
       err => {
-        console.log(err)
+        reject(err)
       }
-    )
-}
+      )
+    })
+  }
 
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes

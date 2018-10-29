@@ -3,17 +3,8 @@
 const fs = require("fs")
 
 const sql = require("sqlite3").verbose()
-// const knex = require("knex")({
-//   client: "sqlite3",
-//   connection: {
-//     filename: "api.db"
-//   },
-//   useNullAsDefault: true
-// })
 
-const Database = require('./sqlite')
-const database = new Database('api.db')
-const knex = database.knex
+const knex = new require('./sqlite')('api.db')
 
 const setupAPIDatabase = () => {
   let db = new sql.Database(

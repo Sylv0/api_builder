@@ -27,6 +27,12 @@ const setupAPIDatabase = () => {
   })
 }
 
+function getDatabases() {
+  return new Promise((resolve, reject) => {
+    knex.select().from("databases").then(rows => resolve(rows)).catch(err => reject(err))
+  });
+}
+
 function getRoutes(callback) {
   knex
     .select("route", "action")

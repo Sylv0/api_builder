@@ -1,9 +1,11 @@
 CREATE TABLE IF NOT EXISTS 'databases' ( 
     "id" INTEGER PRIMARY KEY  AUTOINCREMENT NOT NULL UNIQUE, 
-    "name" VARCHAR NOT NULL UNIQUE, 
+    "name" VARCHAR NOT NULL UNIQUE,
+    "type" VARCHAR NOT NULL,
     "url" VARCHAR NOT NULL, 
     "username" VARCHAR NOT NULL, 
-    "password" VARCHAR NOT NULL
+    "password" VARCHAR NOT NULL,
+    CONSTRAINT chk_type CHECK (type IN ("sqlite", "mysql"))
 );
 
 CREATE TABLE IF NOT EXISTS 'routes' ( 

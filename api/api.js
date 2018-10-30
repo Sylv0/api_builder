@@ -51,7 +51,7 @@ function setTargetDatabase(database) {
 function getRoutes() {
   return new Promise((resolve, reject) => {
     knex
-      .select("route", "action")
+      .select()
       .from("routes")
       .where({ method: "GET" })
       .then(rows => resolve(rows))

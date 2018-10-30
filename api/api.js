@@ -80,26 +80,19 @@ function registerRoute(
 
 function getValuesFromTargetDatabase(action) {
   return new Promise((resolve, reject) => {
+    let query = target.from(...action['from'])
     let toReturn = []
     let from = []
     Object.keys(action).forEach(function(key) {
       switch (key) {
         case "toReturn":
-          toReturn = action["toReturn"]
-
-        case "from":
-          from = action["from"]
-          break
-
+          query.select(action["toReturn"])
         default:
-          reject("Unable to resolve query")
+          query.select()
           break
       }
     })
-    target
-      .select(...toReturn)
-      .from(...from)
-      .then(rows => {
+      query.then(rows => {
         resolve(rows)
       })
       .catch(err => reject("error geting data"))

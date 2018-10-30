@@ -104,3 +104,4 @@ module.exports.routes = getRoutes
 module.exports.register = registerRoute
 module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase
+module.exports.databases = getDatabases

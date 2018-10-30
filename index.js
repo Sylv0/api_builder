@@ -40,11 +40,6 @@ app.listen(3000)
 api.setup()
 openEndpoints(api)
 
-
-app.get("/", (req, res) => {
-  res.send("<h1>API Builder</h1><p>Documentation to come</p>")
-})
-
 app.post("/build/register", (req, res) => {
   api.register(req.body.database, req.body.route, req.body.action)
   .then(data => {
@@ -52,4 +47,12 @@ app.post("/build/register", (req, res) => {
     openEndpoints(api)
   })
   .catch(err => res.send(`Failed to save route, responded with message:\n${err}`))
+})
+
+app.get("/build/databases", (req, res) => {
+  api.databases()
+  .then(
+    rows => res.send(rows)
+  )
+  .catch(err => res.send(err))
 })

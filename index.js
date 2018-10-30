@@ -1,5 +1,6 @@
 const express = require("express")
 const bodyParser = require('body-parser')
+const cors = require('cors')
 
 const app = express()
 let router = undefined
@@ -7,6 +8,8 @@ let router = undefined
 app.use((req, res, next) => {
   router(req, res, next)
 })
+
+app.use(cors())
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies

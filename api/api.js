@@ -1,10 +1,11 @@
-'use strict'
+"use strict"
 
 const fs = require("fs")
 
 const sql = require("sqlite3").verbose()
 
-const knex = new require('./sqlite')('api.db')
+const knex = new require("./sqlite")("api.db")
+let target
 
 const setupAPIDatabase = () => {
   let db = new sql.Database(
@@ -27,20 +28,34 @@ const setupAPIDatabase = () => {
   })
 }
 
-function getDatabases() {
+function getDatabases(database) {
   return new Promise((resolve, reject) => {
-    knex.select().from("databases").then(rows => resolve(rows)).catch(err => reject(err))
-  });
+    let query = knex.select().from("databases")
+    if (database) query.where("id", "=", database)
+
+    query.then(rows => resolve(rows)).catch(err => reject(err))
+  })
+}
+
+function setTargetDatabase(database) {
+  target = null;
+  return new Promise((resolve, reject) => {
+    getDatabases(database).then(newTarget => {
+      target = require("./sqlite")(newTarget[0].url)
+      if(target) resolve()
+      else reject()
+    })
+  })
 }
 
 function getRoutes() {
   return new Promise((resolve, reject) => {
     knex
-    .select("route", "action")
-    .from("routes")
-    .where({ method: "GET" })
-    .then(rows => resolve(rows))
-    .catch(err => reject(err))
+      .select("route", "action")
+      .from("routes")
+      .where({ method: "GET" })
+      .then(rows => resolve(rows))
+      .catch(err => reject(err))
   })
 }
 
@@ -52,14 +67,14 @@ function registerRoute(
 ) {
   return new Pormise((resolve, reject) => {
     knex("routes")
-    .insert({
-      database: database,
-      route: route,
-      action: action,
-      method: method
-    })
-    .then(res => resolve(res))
-    .catch(err => reject(err))
+      .insert({
+        database: database,
+        route: route,
+        action: action,
+        method: method
+      })
+      .then(res => resolve(res))
+      .catch(err => reject(err))
   })
 }
 
@@ -70,33 +85,29 @@ function getValuesFromTargetDatabase(action) {
     Object.keys(action).forEach(function(key) {
       switch (key) {
         case "toReturn":
-        toReturn = action["toReturn"]
-        
+          toReturn = action["toReturn"]
+
         case "from":
-        from = action["from"]
-        break
-        
+          from = action["from"]
+          break
+
         default:
-        console.log("Nothing")
-        break
+          reject("Unable to resolve query")
+          break
       }
     })
-    knex
-    .select(...toReturn)
-    .from(...from)
-    .then(
-      rows => {
-        console.log("Test")
+    target
+      .select(...toReturn)
+      .from(...from)
+      .then(rows => {
         resolve(rows)
-      },
-      err => {
-        reject(err)
-      }
-      )
-    })
-  }
+      })
+      .catch(err => reject("error geting data"))
+  })
+}
 
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes
 module.exports.register = registerRoute
 module.exports.return = getValuesFromTargetDatabase
+module.exports.target = setTargetDatabase

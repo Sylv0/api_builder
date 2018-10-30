@@ -13,12 +13,17 @@ function openEndpoints(api) {
   router = express.Router()
   api.routes()
   .then(data => {
-    data.forEach(route => {
+    data.map(route => {
       app.get(`/api/${route.route}`, (req, res) => {
-        api.return(JSON.parse(route.action))
-        .then(data => {
-          res.send(data)
+        api.target(route.database)
+        .then(() => {
+          api.return(JSON.parse(route.action))
+          .then(data => {
+            res.send(data)
+          })
+          .catch(err => res.send(err))
         })
+        .catch(err => res.send(err))
       })
     })
   })

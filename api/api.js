@@ -41,7 +41,7 @@ function setTargetDatabase(database) {
   target = null;
   return new Promise((resolve, reject) => {
     getDatabases(database).then(newTarget => {
-      target = require("./sqlite")(newTarget[0])
+      target = require(`./${newTarget[0].type}.js`)(newTarget[0])
       if(target) resolve()
       else reject()
     })
@@ -81,12 +81,12 @@ function registerRoute(
 function getValuesFromTargetDatabase(action) {
   return new Promise((resolve, reject) => {
     let query = target.from(...action['from'])
-    let toReturn = []
-    let from = []
     Object.keys(action).forEach(function(key) {
       switch (key) {
         case "toReturn":
           query.select(action["toReturn"])
+        case "limit":
+          query.limit(action["limit"])
         default:
           query.select()
           break
@@ -95,7 +95,7 @@ function getValuesFromTargetDatabase(action) {
       query.then(rows => {
         resolve(rows)
       })
-      .catch(err => reject("error geting data"))
+      .catch(err => reject(err))
   })
 }
 

@@ -1,4 +1,5 @@
 const express = require("express")
+const bodyParser = require('body-parser')
 
 const app = express()
 let router = undefined
@@ -6,6 +7,11 @@ let router = undefined
 app.use((req, res, next) => {
   router(req, res, next)
 })
+
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 const api = require("./api/api")
 
@@ -39,9 +45,9 @@ app.get("/", (req, res) => {
   res.send("<h1>API Builder</h1><p>Documentation to come</p>")
 })
 
-app.get("/build/register", (req, res) => {
-  api.register(req.query.database, req.query.route, req.query.action)
-  .then(res => {
+app.post("/build/register", (req, res) => {
+  api.register(req.body.database, req.body.route, req.body.action)
+  .then(data => {
     res.send("Saved route")
     openEndpoints(api)
   })

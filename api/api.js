@@ -65,7 +65,7 @@ function registerRoute(
   action = '{"toReturn": ["route", "method"], "from": ["routes"]}',
   method = "GET"
 ) {
-  return new Pormise((resolve, reject) => {
+  return new Promise((resolve, reject) => {
     knex("routes")
       .insert({
         database: database,

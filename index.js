@@ -43,8 +43,8 @@ app.listen(3000)
 api.setup()
 openEndpoints(api)
 
-app.post("/build/register", (req, res) => {
-  api.register(req.body.database, req.body.route, req.body.action)
+app.post("/build/register/route", (req, res) => {
+  api.registerRoute(req.body.database, req.body.route, req.body.action)
   .then(data => {
     res.send("Saved route")
     openEndpoints(api)

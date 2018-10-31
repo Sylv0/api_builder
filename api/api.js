@@ -101,7 +101,7 @@ function getValuesFromTargetDatabase(action) {
 
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes
-module.exports.register = registerRoute
+module.exports.registerRoute = registerRoute
 module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase
 module.exports.databases = getDatabases

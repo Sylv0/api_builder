@@ -59,3 +59,11 @@ app.get("/build/databases", (req, res) => {
   )
   .catch(err => res.send(err))
 })
+
+app.get("/build/routes", (req, res) => {
+  api.routes()
+  .then(
+    rows => res.send(rows)
+  )
+  .catch(err => res.send(err))
+})

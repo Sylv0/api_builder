@@ -14,5 +14,5 @@ CREATE TABLE IF NOT EXISTS 'routes' (
     "route" VARCHAR NOT NULL UNIQUE, 
     "method" VARCHAR NOT NULL, 
     "action" VARCHAR NOT NULL,
-    FOREIGN KEY (database) REFERENCES databases(id)
+    FOREIGN KEY (database) REFERENCES databases(id) ON DELETE CASCADE
 );

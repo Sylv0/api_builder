@@ -5,11 +5,11 @@ const cors = require('cors')
 const app = express()
 let router = undefined
 
+app.use(cors())
 app.use((req, res, next) => {
   router(req, res, next)
 })
 
-app.use(cors())
 
 app.use( bodyParser.json() );       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
@@ -42,6 +42,17 @@ app.listen(3000)
 
 api.setup()
 openEndpoints(api)
+
+app.post("/build/register/database", (req, res) => {
+  api.registerDatabase(req.body.name, req.body.url, req.body.type, req.body.user, req.body.pass)
+  .then(data => {
+    res.send("Saved database")
+    openEndpoints(api)
+  })
+  .catch(err => {
+    res.send(`Failed to save route, responded with message:\n${err}`)
+  })
+})
 
 app.post("/build/register/route", (req, res) => {
   api.registerRoute(req.body.database, req.body.route, req.body.action)

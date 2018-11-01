@@ -4,7 +4,7 @@ const fs = require("fs")
 
 const sql = require("sqlite3").verbose()
 
-const knex = new require("./sqlite")({url: "api.db"})
+const knex = new require("./sqlite")({ url: "api.db" })
 let target
 
 const setupAPIDatabase = () => {
@@ -38,11 +38,11 @@ function getDatabases(database) {
 }
 
 function setTargetDatabase(database) {
-  target = null;
+  target = null
   return new Promise((resolve, reject) => {
     getDatabases(database).then(newTarget => {
       target = require(`./${newTarget[0].type}.js`)(newTarget[0])
-      if(target) resolve()
+      if (target) resolve()
       else reject()
     })
   })
@@ -55,6 +55,21 @@ function getRoutes() {
       .from("routes")
       .where({ method: "GET" })
       .then(rows => resolve(rows))
+      .catch(err => reject(err))
+  })
+}
+
+function registerDatabase(name, url, type, username = "", password = "") {
+  return new Promise((resolve, reject) => {
+    knex("databases")
+      .insert({
+        name: name,
+        url: url,
+        type: type,
+        username: username,
+        password: password
+      })
+      .then(res => resolve(res))
       .catch(err => reject(err))
   })
 }
@@ -80,7 +95,7 @@ function registerRoute(
 
 function getValuesFromTargetDatabase(action) {
   return new Promise((resolve, reject) => {
-    let query = target.from(...action['from'])
+    let query = target.from(...action["from"])
     Object.keys(action).forEach(function(key) {
       switch (key) {
         case "toReturn":
@@ -92,7 +107,8 @@ function getValuesFromTargetDatabase(action) {
           break
       }
     })
-      query.then(rows => {
+    query
+      .then(rows => {
         resolve(rows)
       })
       .catch(err => reject(err))
@@ -101,6 +117,7 @@ function getValuesFromTargetDatabase(action) {
 
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes
+module.exports.registerDatabase = registerDatabase
 module.exports.registerRoute = registerRoute
 module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase

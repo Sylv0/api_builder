@@ -1,6 +1,6 @@
 const express = require("express")
-const bodyParser = require('body-parser')
-const cors = require('cors')
+const bodyParser = require("body-parser")
+const cors = require("cors")
 
 const app = express()
 let router = undefined
@@ -10,29 +10,32 @@ app.use((req, res, next) => {
   router(req, res, next)
 })
 
-
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
-app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
-  extended: true
-}));
+app.use(bodyParser.json()) // to support JSON-encoded bodies
+app.use(
+  bodyParser.urlencoded({
+    // to support URL-encoded bodies
+    extended: true
+  })
+)
 
 const api = require("./api/api")
 
 function openEndpoints(api) {
   router = express.Router()
-  api.routes()
-  .then(data => {
+  api.routes().then(data => {
     data.map(route => {
       app.get(`/api/${route.route}`, (req, res) => {
-        api.target(route.database)
-        .then(() => {
-          api.return(JSON.parse(route.action))
-          .then(data => {
-            res.send(data)
+        api
+          .target(route.database)
+          .then(() => {
+            api
+              .return(JSON.parse(route.action))
+              .then(data => {
+                res.send(data)
+              })
+              .catch(err => res.send(err))
           })
           .catch(err => res.send(err))
-        })
-        .catch(err => res.send(err))
       })
     })
   })
@@ -44,37 +47,47 @@ api.setup()
 openEndpoints(api)
 
 app.post("/build/register/database", (req, res) => {
-  api.registerDatabase(req.body.name, req.body.url, req.body.type, req.body.user, req.body.pass)
-  .then(data => {
-    res.send("Saved database")
-    openEndpoints(api)
-  })
-  .catch(err => {
-    res.send(`Failed to save route, responded with message:\n${err}`)
-  })
+  api
+    .registerDatabase(
+      req.body.name,
+      req.body.url,
+      req.body.type,
+      req.body.user,
+      req.body.pass
+    )
+    .then(data => {
+      res.send({ message: "Saved database", route: req.body })
+      openEndpoints(api)
+    })
+    .catch(err => {
+      res.status(500)
+      res.send({message: err, route: req.body})
+    })
 })
 
 app.post("/build/register/route", (req, res) => {
-  api.registerRoute(req.body.database, req.body.route, req.body.action)
-  .then(data => {
-    res.send("Saved route")
-    openEndpoints(api)
-  })
-  .catch(err => res.send(`Failed to save route, responded with message:\n${err}`))
+  api
+    .registerRoute(req.body.database, req.body.route, req.body.action)
+    .then(data => {
+      res.send("Saved route")
+      openEndpoints(api)
+    })
+    .catch(err => {
+      res.status(500)
+      res.send(`Failed to save route, responded with message:\n${err}`)
+    })
 })
 
 app.get("/build/databases", (req, res) => {
-  api.databases()
-  .then(
-    rows => res.send(rows)
-  )
-  .catch(err => res.send(err))
+  api
+    .databases()
+    .then(rows => res.send(rows))
+    .catch(err => res.send(err))
 })
 
 app.get("/build/routes", (req, res) => {
-  api.routes()
-  .then(
-    rows => res.send(rows)
-  )
-  .catch(err => res.send(err))
+  api
+    .routes()
+    .then(rows => res.send(rows))
+    .catch(err => res.send(err))
 })

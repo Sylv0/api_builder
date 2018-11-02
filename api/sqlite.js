@@ -1,4 +1,6 @@
-module.exports = target => {
+let api = {}
+
+api['knex'] = target => {
   return require('knex')({
     client: "sqlite3",
     connection: {
@@ -7,3 +9,9 @@ module.exports = target => {
     useNullAsDefault: true
   })
 }
+
+api['getTables'] = () => {
+  return "Tables"
+}
+ 
+module.exports = api

@@ -1,4 +1,6 @@
-module.exports = target => {
+let api = {}
+
+api['knex'] = target => {
     return require('knex')({
         client: 'mysql',
         connection: {
@@ -9,3 +11,5 @@ module.exports = target => {
         }
       });
   }
+
+  module.exports = api

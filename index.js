@@ -61,7 +61,7 @@ app.post("/build/register/database", (req, res) => {
     })
     .catch(err => {
       res.status(500)
-      res.send({message: err, route: req.body})
+      res.send({ message: err.code, route: req.body })
     })
 })
 

@@ -27,7 +27,7 @@ class API {
 
   tables(database = null) {
     return new Promise((resolve, reject) => {
-      this.knex.select("table_name").from("information_schema.tables").where("table_schema", "=", database)
+      this.knex.select("table_name as name").from("information_schema.tables").where("table_schema", "=", database)
       .then(resolve)
       .catch(reject)
     })

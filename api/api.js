@@ -5,10 +5,7 @@ const fs = require("fs")
 const sql = require("sqlite3").verbose()
 
 let API = require("./sqlite")
-let api = new API({url: "api.db"})
-api.tables()
-.then(console.log)
-.catch(console.log)
+let api = new API({ url: "api.db" })
 const knex = api.knex
 let target
 
@@ -38,20 +35,41 @@ function getDatabases(database) {
     let query = knex.select().from("databases")
     if (database) query.where("id", "=", database)
 
-    query.then(rows => resolve(rows)).catch(err => reject(err))
+    query
+      .then(rows => {
+        if (rows.length > 0) resolve(rows)
+        reject("No database")
+      })
+      .catch(err => reject(err))
   })
 }
 
 function setTargetDatabase(database) {
   target = null
   return new Promise((resolve, reject) => {
-    getDatabases(database).then(newTarget => {
-      API = require(`./${newTarget[0].type}.js`)
-      api = new API(newTarget[0])
-      target = api.knex
-      if (target) resolve()
-      else reject()
-    })
+    getDatabases(database)
+      .then(newTarget => {
+        API = require(`./${newTarget[0].type}.js`)
+        api = new API(newTarget[0])
+        target = api.knex
+        if (target) resolve()
+        else reject()
+      })
+      .catch(err => {
+        reject()
+      })
+  })
+}
+
+function getTables(id) {
+  return new Promise((resolve, reject) => {
+    setTargetDatabase(id)
+      .then(() => console.log("Set target"))
+      .catch(() => console.log("Failed to target"))
+    api
+      .tables()
+      .then(resolve)
+      .catch(console.log)
   })
 }
 
@@ -129,3 +147,4 @@ module.exports.registerRoute = registerRoute
 module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase
 module.exports.databases = getDatabases
+module.exports.tables = getTables

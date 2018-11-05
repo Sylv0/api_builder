@@ -4,7 +4,12 @@ const fs = require("fs")
 
 const sql = require("sqlite3").verbose()
 
-const knex = new require("./sqlite").knex({ url: "api.db" })
+let API = require("./sqlite")
+let api = new API({url: "api.db"})
+api.tables()
+.then(console.log)
+.catch(console.log)
+const knex = api.knex
 let target
 
 const setupAPIDatabase = () => {
@@ -41,7 +46,9 @@ function setTargetDatabase(database) {
   target = null
   return new Promise((resolve, reject) => {
     getDatabases(database).then(newTarget => {
-      target = require(`./${newTarget[0].type}.js`).knex(newTarget[0])
+      API = require(`./${newTarget[0].type}.js`)
+      api = new API(newTarget[0])
+      target = api.knex
       if (target) resolve()
       else reject()
     })

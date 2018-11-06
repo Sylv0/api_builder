@@ -69,12 +69,12 @@ app.post("/build/register/route", (req, res) => {
   api
     .registerRoute(req.body.database, req.body.route, req.body.action)
     .then(data => {
-      res.send("Saved route")
+      res.send({message: "Saved route"})
       openEndpoints(api)
     })
     .catch(err => {
       res.status(500)
-      res.send(`Failed to save route, responded with message:\n${err}`)
+      res.send({message: `Failed to save route, responded with message:\n${err}`})
     })
 })
 

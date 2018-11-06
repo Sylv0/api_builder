@@ -77,6 +77,18 @@ function getTables(id) {
   })
 }
 
+function getColumns(id, table) {
+  return new Promise((resolve, reject) => {
+    setTargetDatabase(id)
+      .then(() => {
+        target(table).columnInfo()
+        .then(resolve)
+        .catch(reject)
+      })
+      .catch(err => reject(err))
+  })
+}
+
 function getRoutes() {
   return new Promise((resolve, reject) => {
     knex
@@ -152,3 +164,4 @@ module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase
 module.exports.databases = getDatabases
 module.exports.tables = getTables
+module.exports.columns = getColumns

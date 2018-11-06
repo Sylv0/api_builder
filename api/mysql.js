@@ -38,21 +38,6 @@ class API {
         .catch(reject)
     })
   }
-
-  columns(database, table) {
-    return new Promise((resolve, reject) => {
-      this.knex
-        .select("column_name as name")
-        .from("information_schema.columns")
-        .where("table_schema", "=", database)
-        .andWhere("table_name", "=", table)
-        .then(data => {
-          console.log(data)
-          resolve(data)
-        })
-        .catch(reject)
-    })
-  }
 }
 
 module.exports = API

@@ -89,6 +89,12 @@ app.get("/build/tables/:id", (req, res) => {
   api.tables(req.params.id).then(data => res.send(data)).catch(err => res.send(err))
 })
 
+app.get("/build/columns/:id/:table", (req, res) => {
+  api.columns(req.params.id, req.params.table)
+  .then(data => res.send(data))
+  .catch(err => res.send(err))
+})
+
 app.get("/build/routes", (req, res) => {
   api
     .routes()

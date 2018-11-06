@@ -28,7 +28,10 @@ class API {
   tables(database = null) {
     return new Promise((resolve, reject) => {
       this.knex.select("name").from("sqlite_master").whereNot("name", "=", "sqlite_sequence").andWhere("type", "=", "table")
-      .then(resolve)
+      .then(data => {
+        console.log(data)
+        resolve(data)
+      })
       .catch(reject)
     })
   }

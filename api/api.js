@@ -64,12 +64,16 @@ function setTargetDatabase(database) {
 function getTables(id) {
   return new Promise((resolve, reject) => {
     setTargetDatabase(id)
-      .then(() => console.log("Set target"))
-      .catch(() => console.log("Failed to target"))
-    api
-      .tables()
-      .then(resolve)
-      .catch(console.log)
+      .then(() => {
+        getDatabases()
+        .then(dbs => {
+          api
+          .tables(dbs.filter(db => db.id.toString() === id)[0].name)
+          .then(resolve)
+          .catch(console.log)
+        })
+      })
+      .catch(err => reject(err))
   })
 }
 

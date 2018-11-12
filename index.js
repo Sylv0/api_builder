@@ -68,7 +68,10 @@ app.post("/build/register/database", (req, res) => {
 app.get("/build/remove/database/:id", (req, res) => {
   api.unregisterDatabase(req.params.id)
   .then(data => {
-    res.send("Removed")
+    if(data)
+      res.send("Removed")
+    else 
+      res.send("Nothing to remove")
     openEndpoints(api)
   })
   .catch(error => res.send(error))
@@ -87,6 +90,19 @@ app.post("/build/register/route", (req, res) => {
       res.send({message: `Failed to save route, responded with message:\n${err}`})
     })
 })
+
+app.get("/build/remove/route/:id", (req, res) => {
+  api.unregisterRoute(req.params.id)
+  .then(data => {
+    if(data)
+      res.send("Removed")
+    else 
+      res.send("Nothing to remove")
+    openEndpoints(api)
+  })
+  .catch(error => res.send(error))
+})
+
 
 app.get("/build/databases", (req, res) => {
   api

@@ -167,11 +167,20 @@ function unregisterDatabase(id) {
   })
 }
 
+function unregisterRoute(id) {
+  return new Promise((resolve, reject) => {
+      knex("routes").del().where("id", id)
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes
 module.exports.registerDatabase = registerDatabase
 module.exports.unregisterDatabase = unregisterDatabase
 module.exports.registerRoute = registerRoute
+module.exports.unregisterRoute = unregisterRoute
 module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase
 module.exports.databases = getDatabases

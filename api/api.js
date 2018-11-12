@@ -20,6 +20,9 @@ const setupAPIDatabase = () => {
         db.close()
         return
       }
+      else {
+        db.run('PRAGMA foreign_keys=on')
+      }
     }
   )
 
@@ -65,12 +68,11 @@ function getTables(id) {
   return new Promise((resolve, reject) => {
     setTargetDatabase(id)
       .then(() => {
-        getDatabases()
-        .then(dbs => {
+        getDatabases().then(dbs => {
           api
-          .tables(dbs.filter(db => db.id.toString() === id)[0].name)
-          .then(resolve)
-          .catch(console.log)
+            .tables(dbs.filter(db => db.id.toString() === id)[0].name)
+            .then(resolve)
+            .catch(console.log)
         })
       })
       .catch(err => reject(err))
@@ -81,9 +83,10 @@ function getColumns(id, table) {
   return new Promise((resolve, reject) => {
     setTargetDatabase(id)
       .then(() => {
-        target(table).columnInfo()
-        .then(resolve)
-        .catch(reject)
+        target(table)
+          .columnInfo()
+          .then(resolve)
+          .catch(reject)
       })
       .catch(err => reject(err))
   })
@@ -156,9 +159,18 @@ function getValuesFromTargetDatabase(action) {
   })
 }
 
+function unregisterDatabase(id) {
+  return new Promise((resolve, reject) => {
+      knex("databases").del().where("id", id)
+      .then(resolve)
+      .catch(reject)
+  })
+}
+
 module.exports.setup = setupAPIDatabase
 module.exports.routes = getRoutes
 module.exports.registerDatabase = registerDatabase
+module.exports.unregisterDatabase = unregisterDatabase
 module.exports.registerRoute = registerRoute
 module.exports.return = getValuesFromTargetDatabase
 module.exports.target = setTargetDatabase

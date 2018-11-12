@@ -5,11 +5,11 @@ const cors = require("cors")
 const app = express()
 let router = undefined
 
-app.use(cors())
 app.use((req, res, next) => {
   router(req, res, next)
 })
 
+app.use(cors())
 app.use(bodyParser.json()) // to support JSON-encoded bodies
 app.use(
   bodyParser.urlencoded({
@@ -64,6 +64,16 @@ app.post("/build/register/database", (req, res) => {
       res.send({ message: err.code, route: req.body })
     })
 })
+
+app.get("/build/remove/database/:id", (req, res) => {
+  api.unregisterDatabase(req.params.id)
+  .then(data => {
+    res.send("Removed")
+    openEndpoints(api)
+  })
+  .catch(error => res.send(error))
+})
+
 
 app.post("/build/register/route", (req, res) => {
   api

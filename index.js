@@ -66,43 +66,41 @@ app.post("/build/register/database", (req, res) => {
 })
 
 app.get("/build/remove/database/:id", (req, res) => {
-  api.unregisterDatabase(req.params.id)
-  .then(data => {
-    if(data)
-      res.send("Removed")
-    else 
-      res.send("Nothing to remove")
-    openEndpoints(api)
-  })
-  .catch(error => res.send(error))
+  api
+    .unregisterDatabase(req.params.id)
+    .then(data => {
+      if (data) res.send("Removed")
+      else res.send("Nothing to remove")
+      openEndpoints(api)
+    })
+    .catch(error => res.send(error))
 })
-
 
 app.post("/build/register/route", (req, res) => {
   api
     .registerRoute(req.body.database, req.body.route, req.body.action)
     .then(data => {
-      res.send({message: "Saved route"})
+      res.send({ message: "Saved route" })
       openEndpoints(api)
     })
     .catch(err => {
       res.status(500)
-      res.send({message: `Failed to save route, responded with message:\n${err}`})
+      res.send({
+        message: `Failed to save route, responded with message:\n${err}`
+      })
     })
 })
 
 app.get("/build/remove/route/:id", (req, res) => {
-  api.unregisterRoute(req.params.id)
-  .then(data => {
-    if(data)
-      res.send("Removed")
-    else 
-      res.send("Nothing to remove")
-    openEndpoints(api)
-  })
-  .catch(error => res.send(error))
+  api
+    .unregisterRoute(req.params.id)
+    .then(data => {
+      if (data) res.send("Removed")
+      else res.send("Nothing to remove")
+      openEndpoints(api)
+    })
+    .catch(error => res.send(error))
 })
-
 
 app.get("/build/databases", (req, res) => {
   api
@@ -112,13 +110,17 @@ app.get("/build/databases", (req, res) => {
 })
 
 app.get("/build/tables/:id", (req, res) => {
-  api.tables(req.params.id).then(data => res.send(data)).catch(err => res.send(err))
+  api
+    .tables(req.params.id)
+    .then(data => res.send(data))
+    .catch(err => res.send(err))
 })
 
 app.get("/build/columns/:id/:table", (req, res) => {
-  api.columns(req.params.id, req.params.table)
-  .then(data => res.send(data))
-  .catch(err => res.send(err))
+  api
+    .columns(req.params.id, req.params.table)
+    .then(data => res.send(data))
+    .catch(err => res.send(err))
 })
 
 app.get("/build/routes", (req, res) => {

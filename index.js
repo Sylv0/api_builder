@@ -73,8 +73,6 @@ app.get("/build/remove/database/:id", (req, res) => {
     removeRoute(app, "/api/" + a.route)
   }))
   .catch(console.log)
-  res.send("Wah");
-  return
   api
     .unregisterDatabase(req.params.id)
     .then(data => {

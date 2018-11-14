@@ -32,7 +32,6 @@ class API {
         .from("information_schema.tables")
         .where("table_schema", "=", database)
         .then(data => {
-          console.log(data)
           resolve(data)
         })
         .catch(reject)

@@ -2,6 +2,8 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const cors = require("cors")
 
+const removeRoute = require("./utils/remove-route")
+
 const app = express()
 let router = undefined
 
@@ -66,6 +68,13 @@ app.post("/build/register/database", (req, res) => {
 })
 
 app.get("/build/remove/database/:id", (req, res) => {
+  api.routes()
+  .then(data => data.filter(a => a.database.toString() === req.params.id).forEach(a => {
+    removeRoute(app, "/api/" + a.route)
+  }))
+  .catch(console.log)
+  res.send("Wah");
+  return
   api
     .unregisterDatabase(req.params.id)
     .then(data => {
@@ -92,6 +101,11 @@ app.post("/build/register/route", (req, res) => {
 })
 
 app.get("/build/remove/route/:id", (req, res) => {
+  api.routes()
+  .then(data => removeRoute(app, "/api/" + data.filter(a => a.id.toString() === req.params.id)[0].route))
+  .catch(console.log)
+  res.send("Wah");
+  return;
   api
     .unregisterRoute(req.params.id)
     .then(data => {

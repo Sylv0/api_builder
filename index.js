@@ -102,8 +102,6 @@ app.get("/build/remove/route/:id", (req, res) => {
   api.routes()
   .then(data => removeRoute(app, "/api/" + data.filter(a => a.id.toString() === req.params.id)[0].route))
   .catch(console.log)
-  res.send("Wah");
-  return;
   api
     .unregisterRoute(req.params.id)
     .then(data => {

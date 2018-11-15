@@ -143,7 +143,7 @@ function getValuesFromTargetDatabase(action) {
     Object.keys(action).forEach(function(key) {
       switch (key) {
         case "toReturn":
-          query.select(action["toReturn"])
+          query.select(...action["toReturn"])
         case "limit":
           query.limit(action["limit"])
         default:

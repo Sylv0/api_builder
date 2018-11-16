@@ -1,5 +1,3 @@
-var util = require("util")
-
 function _findRoute(path, stack) {
   var count = 0
   var routes = []

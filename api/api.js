@@ -41,7 +41,7 @@ function getDatabases(database) {
     query
       .then(rows => {
         if (rows.length > 0) resolve(rows)
-        reject("No database")
+        reject({error: true, message: "No database"})
       })
       .catch(err => reject(err))
   })
